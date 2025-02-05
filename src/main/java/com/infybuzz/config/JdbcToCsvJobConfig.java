@@ -38,7 +38,7 @@ public class JdbcToCsvJobConfig {
     private DataSource datasource;
 
 
-     @Bean("jdbc-csv-job")
+    // @Bean("jdbc-csv-job")
     public Job jdbcCsvJob() throws Exception {
         return  jobBuilderFactory.get("jdbc-csv-job")
                 .incrementer(new RunIdIncrementer())
@@ -56,14 +56,14 @@ public class JdbcToCsvJobConfig {
                 .build();
     }
 
-    @Bean
+   // @Bean
     public TaskExecutor taskExecutor() {
         SimpleAsyncTaskExecutor taskExecutor = new SimpleAsyncTaskExecutor();
         taskExecutor.setConcurrencyLimit(10); // Limit to 10 concurrent threads
         return taskExecutor;
     }
 
-    @Bean
+   // @Bean
     public FlatFileItemWriter<StudentJdbc> csvFileItemWriter(){
         FlatFileItemWriter<StudentJdbc> flatFileItemWriter = new FlatFileItemWriter<>();
         // Output CSV file location
@@ -93,7 +93,7 @@ public class JdbcToCsvJobConfig {
 
         return flatFileItemWriter;
     }
-    @Bean
+   // @Bean
     public JdbcPagingItemReader<StudentJdbc> jdbcPagingItemReader() throws Exception {
         JdbcPagingItemReader<StudentJdbc> reader = new JdbcPagingItemReader<>();
         reader.setDataSource(datasource);

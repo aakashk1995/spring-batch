@@ -7,6 +7,7 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.step.skip.AlwaysSkipItemSkipPolicy;
 import org.springframework.batch.item.database.*;
 import org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
@@ -48,6 +50,10 @@ public class JdbcJobConfig {
               .reader(jdbcPagingItemReader())
              //.reader(jdbcCursorItemReader())
                 .writer(jdbcBatchItemWriter())
+              .faultTolerant()
+              .skip(Exception.class)
+              .skipLimit(Integer.MAX_VALUE)
+              //.skipPolicy(new AlwaysSkipItemSkipPolicy())
             //  .writer(jdbcWriter)
               .taskExecutor(taskExecutor())
               .throttleLimit(10)
@@ -67,6 +73,7 @@ public class JdbcJobConfig {
         queryProvider.setSelectClause("select id, first_name as firstName, last_name as lastName, email");
         queryProvider.setFromClause("from student");
         queryProvider.setSortKey("id");
+
 
         reader.setQueryProvider(queryProvider.getObject());
         reader.setRowMapper(new BeanPropertyRowMapper<>(StudentJdbc.class));
@@ -96,7 +103,7 @@ public class JdbcJobConfig {
         return jdbcCursorItemReader;
     }
 
-   // @Bean
+    //@Bean
     public JdbcBatchItemWriter<StudentJdbc> jdbcBatchItemWriter() {
         JdbcBatchItemWriter<StudentJdbc> jdbcBatchItemWriter =
                 new JdbcBatchItemWriter<StudentJdbc>();
@@ -138,7 +145,7 @@ public class JdbcJobConfig {
     }
 
 
-  //  @Bean
+    @Bean
     public TaskExecutor taskExecutor() {
         SimpleAsyncTaskExecutor taskExecutor = new SimpleAsyncTaskExecutor();
         taskExecutor.setConcurrencyLimit(10); // Limit to 10 concurrent threads

@@ -28,7 +28,7 @@ public class ChunkJobConfig {
     @Autowired
     private FirstItemWriter firstItemWriter;
 
-    //@Bean(name = "second-job")
+   @Bean(name = "second-job")
     public Job firstJob() {
         return jobBuilderFactory.get("second Job")
                 .incrementer(new RunIdIncrementer())

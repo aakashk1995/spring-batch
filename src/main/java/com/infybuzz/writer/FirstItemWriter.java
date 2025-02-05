@@ -11,7 +11,8 @@ public class FirstItemWriter implements ItemWriter<Long> {
   //in item writer you will not get data one-by-one it depends of chunk size
     @Override
     public void write(List list) throws Exception {
-        System.out.println("Inside item writer");
+        System.out.println("Inside item writer" + list.size());
+
       list.stream().forEach(System.out::println);
     }
 }

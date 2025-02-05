@@ -43,7 +43,7 @@ public class SampleJob {
 				.incrementer(new RunIdIncrementer())
 				.start(firstStep())
 				.next(secondStep())
-				.listener(firstJobListener)
+				.listener(firstJobListener) //execute before and after step
 				.build();
 	}
 
